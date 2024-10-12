@@ -38,31 +38,36 @@ public class Solution4 {
         int n = nums.length;
         int maxVal = Arrays.stream(nums).max().getAsInt();
         int minVal = Arrays.stream(nums).min().getAsInt();
-        
+
+        // 特殊情况处理
         if (maxVal == minVal) {
             return 0;
         }
-        
+
+        // 计算桶的大小和数量
         int bucketSize = Math.max(1, (maxVal - minVal) / (n - 1));
         int bucketCount = (maxVal - minVal) / bucketSize + 1;
-        
+
+        // 创建桶
         int[][] buckets = new int[bucketCount][2];
         for (int i = 0; i < bucketCount; i++) {
-            buckets[i][0] = Integer.MAX_VALUE; 
-            buckets[i][1] = Integer.MIN_VALUE; 
+            buckets[i][0] = Integer.MAX_VALUE; // 桶的最小值
+            buckets[i][1] = Integer.MIN_VALUE; // 桶的最大值
         }
-        
+
+        // 将每个数字放入相应的桶中
         for (int num : nums) {
             int bucketIndex = (num - minVal) / bucketSize;
             buckets[bucketIndex][0] = Math.min(buckets[bucketIndex][0], num);
             buckets[bucketIndex][1] = Math.max(buckets[bucketIndex][1], num);
         }
-        
-        int ret = 0; 
+
+        // 计算相邻桶之间的最大差值
+        int ret = 0; // 使用 ret 作为最大差值的变量
         int previousMax = buckets[0][1];
 
         for (int i = 1; i < bucketCount; i++) {
-            if (buckets[i][0] == Integer.MAX_VALUE) continue; 
+            if (buckets[i][0] == Integer.MAX_VALUE) continue; // 该桶是空桶
             ret = Math.max(ret, buckets[i][0] - previousMax);
             previousMax = buckets[i][1];
         }
