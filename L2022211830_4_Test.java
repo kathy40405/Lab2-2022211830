@@ -4,6 +4,9 @@ import Lab2_2022211830_solution4.Solution4;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+
+//fork评价：写的真好
+
 /**
  * @description: 测试Solution4类的maximumGap方法
  *
