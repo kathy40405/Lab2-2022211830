@@ -1,3 +1,5 @@
+package Lab2_2022211830_solution4;
+
 import java.util.Arrays;
 
 /**
@@ -27,37 +29,44 @@ import java.util.Arrays;
  * 0 <= nums[i] <= 109
  *
  */
-class Solution4 {
+public class Solution4 {
     public int maximumGap(int[] nums) {
-
-        int n = nums.length - 1;
-        if (n < 2) {
+        if (nums == null || nums.length < 2) {
             return 0;
         }
-        long exp = 1;
-        int[] buf = new int[n];
-        int maxVal = Arrays.stream(nums).max().getAsInt();
 
-        while (maxVal > exp) {
-            int[] cnt = new int[10];
-            for (int i = 0; i < n; i++) {
-                int digit = (nums[i] / (int) exp) % 10;
-                cnt[digit]++;
-            }
-            for (int i = 1; i < 10; i++){
-                cnt[i] += cnt[i - 1];
-            for (int i = n - 1; i >= 0; i--) {
-                int digit = (nums[i] / (int) exp) % 10;
-                buf[cnt[digit] - 1] = nums[i];
-                cnt[digit]--;
-            }
-            System.arraycopy(buf, 0, nums, 0, n);
-            exp += 10;
+        int n = nums.length;
+        int maxVal = Arrays.stream(nums).max().getAsInt();
+        int minVal = Arrays.stream(nums).min().getAsInt();
+        
+        if (maxVal == minVal) {
+            return 0;
+        }
+        
+        int bucketSize = Math.max(1, (maxVal - minVal) / (n - 1));
+        int bucketCount = (maxVal - minVal) / bucketSize + 1;
+        
+        int[][] buckets = new int[bucketCount][2];
+        for (int i = 0; i < bucketCount; i++) {
+            buckets[i][0] = Integer.MAX_VALUE; 
+            buckets[i][1] = Integer.MIN_VALUE; 
+        }
+        
+        for (int num : nums) {
+            int bucketIndex = (num - minVal) / bucketSize;
+            buckets[bucketIndex][0] = Math.min(buckets[bucketIndex][0], num);
+            buckets[bucketIndex][1] = Math.max(buckets[bucketIndex][1], num);
+        }
+        
+        int ret = 0; 
+        int previousMax = buckets[0][1];
+
+        for (int i = 1; i < bucketCount; i++) {
+            if (buckets[i][0] == Integer.MAX_VALUE) continue; 
+            ret = Math.max(ret, buckets[i][0] - previousMax);
+            previousMax = buckets[i][1];
         }
 
-        int ret = 0;
-            for (int i = 1; i < n; i++) {
-            ret = Math.max(ret, nums[i] - nums[i - 1]);
-        }return ret;
+        return ret;
     }
 }
